@@ -1,0 +1,56 @@
+CREATE TABLE sample (
+    id SERIAL PRIMARY KEY,
+    sample_name VARCHAR(255) NOT NULL,
+    sample_image_url VARCHAR(255),
+    description VARCHAR(500),
+    origin GEOGRAPHY(POINT, 4326),
+    date_collected TIMESTAMP WITHOUT TIME ZONE
+);
+
+
+CREATE TABLE equipment (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    type VARCHAR(255) NOT NULL
+);
+
+
+CREATE TABLE document (
+    document_id SERIAL PRIMARY KEY,
+    document_name VARCHAR(255) NOT NULL,
+    document_url VARCHAR(255) NOT NULL
+);
+
+
+CREATE TABLE sampleimage (
+    id SERIAL PRIMARY KEY,
+    image_url VARCHAR(255) NOT NULL,
+    caption VARCHAR(255),
+    date_obtained TIMESTAMP WITHOUT TIME ZONE,
+    sample_id INT NOT NULL,
+    equipment_id INT NOT NULL,
+
+    FOREIGN KEY (sample_id)
+        REFERENCES sample(id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (equipment_id)
+        REFERENCES equipment(id)
+);
+
+
+CREATE TABLE reference (
+    id SERIAL PRIMARY KEY,
+    sample_id INT NOT NULL,
+    document_id INT NOT NULL,
+
+    FOREIGN KEY (sample_id)
+        REFERENCES sample(id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (document_id)
+        REFERENCES document(document_id)
+        ON DELETE CASCADE,
+
+    UNIQUE (sample_id, document_id)
+);
